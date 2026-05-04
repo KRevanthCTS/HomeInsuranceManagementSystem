@@ -53,7 +53,8 @@ public class AuthController {
                 throw new BadCredentialsException("Invalid credentials");
             }
 
-            String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
+            // Convert role to String (e.g., enum.name()) before generating the token
+            String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
             return ResponseEntity.ok(new LoginResponse(token));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
