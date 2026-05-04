@@ -1,4 +1,3 @@
-// security/CustomUserDetailsService.java
 package com.cognizant.insurance.auth_service.security;
 
 import com.cognizant.insurance.auth_service.entity.User;

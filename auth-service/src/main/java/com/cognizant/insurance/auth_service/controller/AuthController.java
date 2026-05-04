@@ -1,4 +1,3 @@
-// controller/AuthController.java
 package com.cognizant.insurance.auth_service.controller;
 
 import com.cognizant.insurance.auth_service.dto.LoginRequest;
@@ -32,6 +31,11 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok("Auth Service is running!");
     }
 
     @PostMapping("/login")

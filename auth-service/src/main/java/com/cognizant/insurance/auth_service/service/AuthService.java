@@ -1,4 +1,3 @@
-// service/AuthService.java
 package com.cognizant.insurance.auth_service.service;
 
 import com.cognizant.insurance.auth_service.entity.User;

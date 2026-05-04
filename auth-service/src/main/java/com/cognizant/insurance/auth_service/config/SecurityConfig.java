@@ -1,4 +1,3 @@
-// config/SecurityConfig.java
 package com.cognizant.insurance.auth_service.config;
 
 import com.cognizant.insurance.auth_service.security.JwtAuthenticationEntryPoint;
