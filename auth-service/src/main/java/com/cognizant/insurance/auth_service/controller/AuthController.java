@@ -2,6 +2,7 @@ package com.cognizant.insurance.auth_service.controller;
 
 import com.cognizant.insurance.auth_service.dto.LoginRequest;
 import com.cognizant.insurance.auth_service.dto.LoginResponse;
+import com.cognizant.insurance.auth_service.dto.RegisterRequest;
 import com.cognizant.insurance.auth_service.entity.User;
 import com.cognizant.insurance.auth_service.service.AuthService;
 import com.cognizant.insurance.auth_service.util.JwtUtil;
@@ -59,5 +60,11 @@ public class AuthController {
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+    
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+        authService.registerUser(request, passwordEncoder);
+        return ResponseEntity.ok("User registered successfully");
     }
 }
