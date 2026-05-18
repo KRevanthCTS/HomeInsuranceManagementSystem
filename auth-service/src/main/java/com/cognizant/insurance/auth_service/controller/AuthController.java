@@ -1,11 +1,5 @@
 package com.cognizant.insurance.auth_service.controller;
 
-import com.cognizant.insurance.auth_service.dto.LoginRequest;
-import com.cognizant.insurance.auth_service.dto.LoginResponse;
-import com.cognizant.insurance.auth_service.dto.RegisterRequest;
-import com.cognizant.insurance.auth_service.entity.User;
-import com.cognizant.insurance.auth_service.service.AuthService;
-import com.cognizant.insurance.auth_service.util.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +7,18 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.cognizant.insurance.auth_service.dto.LoginRequest;
+import com.cognizant.insurance.auth_service.dto.LoginResponse;
+import com.cognizant.insurance.auth_service.dto.RegisterRequest;
+import com.cognizant.insurance.auth_service.entity.User;
+import com.cognizant.insurance.auth_service.service.AuthService;
+import com.cognizant.insurance.auth_service.util.JwtUtil;
 
 @RestController
 @RequestMapping("/auth")
@@ -61,10 +66,11 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-    
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
         authService.registerUser(request, passwordEncoder);
+        System.out.println("REGISTER API CALLED ✅");
         return ResponseEntity.ok("User registered successfully");
     }
 }
