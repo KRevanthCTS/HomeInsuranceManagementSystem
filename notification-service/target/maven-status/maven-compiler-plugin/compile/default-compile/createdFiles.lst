@@ -1,0 +1,6 @@
+com\cognizant\insurance\notification_service\repository\NotificationRepository.class
+com\cognizant\insurance\notification_service\entity\Notification.class
+com\cognizant\insurance\notification_service\NotificationServiceApplication.class
+com\cognizant\insurance\notification_service\dto\NotificationRequest.class
+com\cognizant\insurance\notification_service\service\NotificationService.class
+com\cognizant\insurance\notification_service\controller\NotificationController.class

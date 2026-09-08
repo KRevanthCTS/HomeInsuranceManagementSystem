@@ -1,0 +1,9 @@
+com\cognizant\insurance\customer_service\entity\Customer$RiskFactor.class
+com\cognizant\insurance\customer_service\CustomerServiceApplication.class
+com\cognizant\insurance\customer_service\entity\Customer.class
+com\cognizant\insurance\customer_service\exception\GlobalExceptionHandler.class
+com\cognizant\insurance\customer_service\exception\ResourceNotFoundException.class
+com\cognizant\insurance\customer_service\repository\CustomerRepository.class
+com\cognizant\insurance\customer_service\service\CustomerService.class
+com\cognizant\insurance\customer_service\controller\CustomerController.class
+com\cognizant\insurance\customer_service\dto\CustomerRequest.class

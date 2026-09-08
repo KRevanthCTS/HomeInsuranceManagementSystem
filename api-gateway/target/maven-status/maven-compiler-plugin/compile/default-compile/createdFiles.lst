@@ -1,0 +1,3 @@
+com\cognizant\insurance\api_gateway\security\JwtAuthenticationFilter.class
+com\cognizant\insurance\api_gateway\security\JwtUtil.class
+com\cognizant\insurance\api_gateway\ApiGatewayApplication.class
