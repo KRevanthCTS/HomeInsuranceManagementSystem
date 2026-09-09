@@ -48,3 +48,9 @@ eureka:
 # the tokens auth-service mints.
 jwt:
   secret: ${JWT_SECRET}
+
+# Stamped on every forwarded request so downstream services can tell a real
+# gateway call from someone hitting their port directly. Must match the
+# gateway.shared-secret of every business service.
+gateway:
+  shared-secret: ${GATEWAY_SHARED_SECRET}

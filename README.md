@@ -33,8 +33,24 @@ each other by name through Eureka (using OpenFeign).
 ```
 
 - **Auth is central at the gateway.** The gateway checks the `Bearer` token on every request
-  except the public auth endpoints, then adds `X-User-Email` and `X-User-Role` headers that the
-  downstream services trust for auditing. Downstream services do not re-validate the token.
+  except the public auth endpoints, then adds `X-User-Email`, `X-User-Role` and `X-User-Id`
+  headers that the downstream services trust. Downstream services do not re-validate the token.
+
+### Authorization
+
+Authentication happens once at the gateway; **authorization happens in each service**, using
+the identity headers above.
+
+- Every business service requires the `X-Gateway-Auth` header to match its
+  `gateway.shared-secret`. This is what makes the identity headers trustworthy - without it,
+  anything that could reach port 8082-8085 could simply claim `X-User-Role: ADMIN`. Inter-service
+  Feign calls forward the header (and the caller's identity) so the callee applies the same rules.
+- **ADMIN only:** `PUT /claims/{id}/status`, and the "list everything" reads
+  (`GET /customers`, `/properties`, `/policies`, `/claims`, `/notifications`).
+- **Owner or ADMIN:** every read/write of a single customer, property, policy, payment or claim.
+  Ownership is resolved as `user id -> customer -> property -> policy -> claim`.
+- Customers use `GET /claims/mine` and `GET /notifications/recipient/{their-own-email}` instead
+  of the admin list views.
 - **Inter-service calls** (OpenFeign, resolved through Eureka):
   - `policy-service → customer-service` — fetch customer details for the policy PDF.
   - `claim-service → policy-service` — validate the policy number when a claim is filed.
@@ -79,12 +95,19 @@ Set these before starting the services (they are read from the environment, neve
 
 ```bash
 # Windows PowerShell
-$env:MYSQL_ROOT_PASSWORD = "your-mysql-password"
-$env:JWT_SECRET          = "a-long-random-secret-at-least-32-bytes-please"
-$env:JWT_EXPIRATION      = "3600000"   # token lifetime in ms (1 hour)
+$env:MYSQL_ROOT_PASSWORD   = "your-mysql-password"
+$env:JWT_SECRET            = "a-long-random-secret-at-least-32-bytes-please"
+$env:JWT_EXPIRATION        = "3600000"   # token lifetime in ms (1 hour)
+$env:GATEWAY_SHARED_SECRET = "another-long-random-secret"
 ```
 
 `JWT_SECRET` **must be identical** for `auth-service` (signs) and `api-gateway` (verifies).
+Note it is base64-decoded before use, so it must decode to at least 32 bytes or
+HS256 signing fails at startup.
+
+`GATEWAY_SHARED_SECRET` **must be identical** for the gateway and all four
+business services. The gateway stamps it on every request it forwards, and the
+services reject anything arriving without it — see "Authorization" below.
 
 ## Run order
 

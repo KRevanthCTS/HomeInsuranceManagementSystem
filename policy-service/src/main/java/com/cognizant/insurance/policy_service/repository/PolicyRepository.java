@@ -9,4 +9,6 @@ import com.cognizant.insurance.policy_service.entity.Policy;
 public interface PolicyRepository extends JpaRepository<Policy, Long> {
 
     Optional<Policy> findByPolicyNumber(String policyNumber);
+
+    boolean existsByPolicyNumber(String policyNumber);
 }

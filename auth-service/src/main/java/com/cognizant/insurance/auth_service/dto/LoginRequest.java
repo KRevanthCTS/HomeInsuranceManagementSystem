@@ -1,7 +1,13 @@
 package com.cognizant.insurance.auth_service.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class LoginRequest {
+
+    @NotBlank(message = "email is required")
     private String email;
+
+    @NotBlank(message = "password is required")
     private String password;
 
     public String getEmail() {

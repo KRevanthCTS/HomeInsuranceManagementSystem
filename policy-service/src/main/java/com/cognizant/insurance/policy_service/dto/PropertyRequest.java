@@ -8,7 +8,9 @@ import jakarta.validation.constraints.Positive;
 
 public class PropertyRequest {
 
-    @NotNull(message = "customerId is required")
+    // Optional: for a normal customer this is derived from their token, so
+    // anything sent here is ignored. Only an ADMIN can use it to register a
+    // property on someone else's behalf.
     private Long customerId;
 
     @NotBlank(message = "propertyType is required (APARTMENT or HOUSE)")

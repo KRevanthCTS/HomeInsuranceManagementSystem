@@ -6,7 +6,9 @@ import jakarta.validation.constraints.NotNull;
 
 public class CustomerRequest {
 
-    @NotNull(message = "userId is required")
+    // Optional: for a normal customer this is taken from their token, so anything
+    // sent here is ignored. Only an ADMIN can use it to create a profile on
+    // someone else's behalf.
     private Long userId;
 
     @NotBlank(message = "fullName is required")

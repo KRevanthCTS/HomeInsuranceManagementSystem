@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home Insurance Management System — Blocker Remediation Report</title>
+<style>
+  :root {
+    --ink:        #1a1c1f;
+    --ink-soft:   #4a4f57;
+    --ink-faint:  #767c86;
+    --rule:       #d8dbe0;
+    --rule-soft:  #e8eaee;
+    --paper:      #ffffff;
+    --tint:       #f5f6f8;
+    --ok:         #1c6b3f;
+    --ok-bg:      #eaf4ee;
+    --warn:       #8a5a10;
+    --warn-bg:    #fbf2e2;
+    --bad:        #9c2a2a;
+    --bad-bg:     #f9eded;
+    --accent:     #1f4e79;
+  }
+
+  @page {
+    size: A4;
+    margin: 16mm 15mm 18mm 15mm;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Segoe UI", -apple-system, system-ui, "Helvetica Neue", Arial, sans-serif;
+    font-size: 9.6pt;
+    line-height: 1.5;
+  }
+
+  code, .mono {
+    font-family: "Cascadia Mono", Consolas, "SF Mono", Menlo, monospace;
+    font-size: 0.88em;
+  }
+  code {
+    background: var(--tint);
+    border: 1px solid var(--rule-soft);
+    border-radius: 3px;
+    padding: 0.05em 0.32em;
+    white-space: nowrap;
+  }
+  pre {
+    background: var(--tint);
+    border: 1px solid var(--rule-soft);
+    border-left: 2.5px solid var(--accent);
+    border-radius: 3px;
+    padding: 7px 10px;
+    margin: 7px 0;
+    overflow-x: auto;
+    font-family: "Cascadia Mono", Consolas, monospace;
+    font-size: 8.3pt;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  pre code { background: none; border: 0; padding: 0; white-space: pre-wrap; }
+
+  /* ---------- cover / masthead ---------- */
+  .masthead {
+    border-bottom: 2.5px solid var(--ink);
+    padding-bottom: 10px;
+    margin-bottom: 4px;
+  }
+  .eyebrow {
+    font-size: 7.6pt;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 5px;
+  }
+  h1 {
+    font-size: 20pt;
+    line-height: 1.15;
+    margin: 0 0 5px;
+    letter-spacing: -0.015em;
+    font-weight: 650;
+  }
+  .standfirst {
+    font-size: 10.4pt;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 46em;
+  }
+
+  .metabar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 26px;
+    padding: 8px 0 0;
+    margin-bottom: 16px;
+    font-size: 8.4pt;
+  }
+  .metabar div { line-height: 1.35; }
+  .metabar dt {
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-size: 7.3pt;
+    margin: 0;
+  }
+  .metabar dd { margin: 0; font-weight: 600; }
+
+  .verdict {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    background: var(--ok-bg);
+    border: 1px solid #bfdcc9;
+    border-left: 3px solid var(--ok);
+    border-radius: 4px;
+    padding: 9px 13px;
+    margin: 0 0 18px;
+  }
+  .verdict strong { color: var(--ok); font-size: 11pt; }
+  .verdict span { color: var(--ink-soft); font-size: 9.1pt; }
+
+  /* ---------- headings ---------- */
+  h2 {
+    font-size: 12.4pt;
+    margin: 22px 0 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--rule);
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  h2 .n {
+    color: var(--ink-faint);
+    font-weight: 500;
+    font-size: 0.82em;
+    margin-right: 7px;
+  }
+  h3 { font-size: 10pt; margin: 14px 0 5px; font-weight: 650; }
+  p { margin: 0 0 7px; }
+  ul, ol { margin: 0 0 8px; padding-left: 17px; }
+  li { margin-bottom: 3.5px; }
+  .lede { color: var(--ink-soft); margin-bottom: 11px; }
+
+  /* ---------- summary table ---------- */
+  table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 8.9pt; }
+  th, td { text-align: left; padding: 5.5px 8px; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+  thead th {
+    background: var(--tint);
+    border-bottom: 1.5px solid var(--rule);
+    font-size: 7.6pt;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-soft);
+    font-weight: 650;
+  }
+  tbody tr:nth-child(even) td { background: #fbfbfc; }
+  td.num { width: 26px; font-weight: 700; color: var(--ink-faint); text-align: right; padding-right: 10px; }
+  .pill {
+    display: inline-block;
+    font-size: 7.4pt;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 1.5px 6px;
+    border-radius: 9px;
+    white-space: nowrap;
+  }
+  .pill.ok   { background: var(--ok-bg);   color: var(--ok);   border: 1px solid #bfdcc9; }
+  .pill.open { background: var(--warn-bg); color: var(--warn); border: 1px solid #ecd9b0; }
+
+  /* ---------- blocker entries ---------- */
+  .blocker {
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    padding: 11px 13px 9px;
+    margin: 0 0 11px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .blocker > header {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    margin-bottom: 7px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .badge {
+    flex: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    font-size: 9.4pt;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .blocker h3 { margin: 0; flex: 1; font-size: 10.4pt; }
+
+  .wasnow { margin: 0; }
+  .wasnow > div {
+    display: grid;
+    grid-template-columns: 62px 1fr;
+    gap: 9px;
+    padding: 3.5px 0;
+    align-items: start;
+  }
+  .wasnow > div + div { border-top: 1px dotted var(--rule-soft); }
+  .tag {
+    font-size: 7.3pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding-top: 2px;
+  }
+  .tag.was { color: var(--bad); }
+  .tag.fix { color: var(--accent); }
+  .tag.ev  { color: var(--ok); }
+
+  .evidence {
+    background: #fafbfc;
+    border: 1px solid var(--rule-soft);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-family: "Cascadia Mono", Consolas, monospace;
+    font-size: 8pt;
+    line-height: 1.55;
+    white-space: pre-wrap;
+  }
+  .evidence .p { color: var(--ok); font-weight: 700; }
+  .evidence .f { color: var(--bad); font-weight: 700; }
+
+  /* ---------- callouts ---------- */
+  .callout {
+    border-radius: 4px;
+    padding: 9px 12px;
+    margin: 10px 0;
+    break-inside: avoid;
+  }
+  .callout.note { background: var(--tint);     border: 1px solid var(--rule); border-left: 3px solid var(--accent); }
+  .callout.warn { background: var(--warn-bg);  border: 1px solid #ecd9b0;     border-left: 3px solid var(--warn); }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout .h {
+    font-weight: 700;
+    font-size: 8.6pt;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 4px;
+  }
+  .callout.note .h { color: var(--accent); }
+  .callout.warn .h { color: var(--warn); }
+
+  /* ---------- diagram ---------- */
+  .flow {
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    background: var(--tint);
+    padding: 12px 13px;
+    margin: 10px 0 12px;
+    break-inside: avoid;
+  }
+  .node {
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    border-radius: 4px;
+    padding: 6px 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+  }
+  .node b { font-size: 8.9pt; flex: none; }
+  .node em { color: var(--ink-faint); font-style: normal; font-size: 7.8pt; }
+  .node.gate { border-color: var(--accent); border-width: 1.5px; background: #f7fafd; }
+  .hop {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0 3px 15px;
+    font-size: 7.6pt;
+    color: var(--ink-soft);
+  }
+  .hop::before {
+    content: "▼";
+    color: var(--accent);
+    font-size: 6.6pt;
+    flex: none;
+  }
+  .hop .mono { color: var(--accent); font-weight: 700; font-size: 7.2pt; }
+  .flow-note { font-size: 7.9pt; color: var(--ink-soft); margin: 9px 0 0; padding-top: 7px; border-top: 1px dotted var(--rule); }
+
+  .cols { column-count: 2; column-gap: 20px; }
+  .cols li { break-inside: avoid; }
+
+  footer {
+    margin-top: 20px;
+    padding-top: 8px;
+    border-top: 1px solid var(--rule);
+    font-size: 7.8pt;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .break { break-before: page; page-break-before: always; }
+  h2, h3 { break-after: avoid; page-break-after: avoid; }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <p class="eyebrow">Backend Audit &amp; Remediation</p>
+  <h1>Home Insurance Management System</h1>
+  <p class="standfirst">Nine blockers found in the Spring Boot microservices backend, what was wrong with each,
+  how it was fixed, and the live evidence that it is now closed.</p>
+</div>
+
+<dl class="metabar">
+  <div><dt>Date</dt><dd>9 September 2026</dd></div>
+  <div><dt>Scope</dt><dd>7 modules · 33 files changed · 20 added</dd></div>
+  <div><dt>Stack</dt><dd>Spring Boot 4.0.7 · Cloud 2025.1.2 · Java 17/24</dd></div>
+  <div><dt>Verification</dt><dd>104 live API checks</dd></div>
+</dl>
+
+<div class="verdict">
+  <strong>All 9 blockers cleared</strong>
+  <span>104 checks passed, 0 failed, against the full stack running on Eureka + gateway + 5 services with MySQL.</span>
+</div>
+
+<h2><span class="n">§1</span>Summary</h2>
+
+<table>
+  <thead>
+    <tr><th class="num">#</th><th style="width:31%">Blocker</th><th style="width:12%">Severity</th><th>Effect before the fix</th><th style="width:14%">Status</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="num">1</td><td>No role check on claim decisions</td><td>Critical</td><td>A customer could approve their own claim</td><td><span class="pill ok">Cleared</span></td></tr>
+    <tr><td class="num">2</td><td>No ownership checks</td><td>Critical</td><td>Any user could read and overwrite any other user's records</td><td><span class="pill ok">Cleared</span></td></tr>
+    <tr><td class="num">3</td><td>Services open on their own ports</td><td>Critical</td><td>Ports 8082–8085 served all data with no token at all</td><td><span class="pill ok">Cleared</span></td></tr>
+    <tr><td class="num">4</td><td>Auth errors all returned 401</td><td>High</td><td>"Email already taken" reported as "Unauthorized"</td><td><span class="pill ok">Cleared</span></td></tr>
+    <tr><td class="num">5</td><td>Duplicate customer profile</td><td>High</td><td>Broke <code>/customers/user/{id}</code> permanently with a 500</td><td><span class="pill ok">Cleared</span></td></tr>
+    <tr><td class="num">6</td><td>Bad enum/type values → 500</td><td>Medium</td><td>Client input errors surfaced as server faults</td><td><span class="pill ok">Cleared</span></td></tr>
+    <tr><td class="num">7</td><td>No business rules on claims</td><td>High</td><td>Future dates, pre-policy dates, loss above cover, unlimited duplicates</td><td><span class="pill ok">Cleared</span></td></tr>
+    <tr><td class="num">8</td><td>No business rules on payments</td><td>High</td><td>₹1 settled a ₹35,000 premium; unlimited overpayment</td><td><span class="pill ok">Cleared</span></td></tr>
+    <tr><td class="num">9</td><td>Colliding policy/claim numbers</td><td>Low</td><td>Random 6-digit against a unique column → occasional 500</td><td><span class="pill ok">Cleared</span></td></tr>
+  </tbody>
+</table>
+
+<h2><span class="n">§2</span>The trust layer — blockers 1, 2 and 3 together</h2>
+
+<p class="lede">These three could not be fixed independently. Blockers 1 and 2 are authorization rules that rely on the
+<code>X-User-*</code> headers the gateway sets. But while blocker 3 was open, anyone who could reach port 8084
+directly could simply send <code>X-User-Role: ADMIN</code> and walk straight past those rules. So all three share
+one mechanism.</p>
+
+<div class="flow">
+  <div class="node"><b>Client</b><em>holds the bearer token</em></div>
+  <div class="hop"><span class="mono">Authorization: Bearer &lt;jwt&gt;</span></div>
+  <div class="node gate"><b>api-gateway &nbsp;:8080</b><em>validates the JWT once — the only place it is checked</em></div>
+  <div class="hop"><span class="mono">X-Gateway-Auth</span> + <span class="mono">X-User-Email / X-User-Role / X-User-Id</span></div>
+  <div class="node"><b>business service &nbsp;:8082–8085</b><em>verifies the secret, then applies ownership</em></div>
+  <div class="hop">the same four headers, forwarded by the Feign interceptor</div>
+  <div class="node"><b>sibling service</b><em>re-applies the identical rules at its own hop</em></div>
+  <p class="flow-note"><b>Three parts.</b> (1) auth-service now puts <code>userId</code> in the JWT, and the gateway
+  forwards it as <code>X-User-Id</code> beside email and role — set, not appended, so anything the client sent under
+  those names is discarded. (2) The gateway stamps <code>X-Gateway-Auth</code> from a new shared secret; every
+  business service has a <code>GatewayAuthFilter</code> that rejects requests without it, which is what makes the
+  identity headers trustworthy. (3) Feign calls forward both the secret and the caller's identity, so each hop in
+  <code>claim → policy → customer</code> re-applies the same ownership rules.</p>
+</div>
+
+<p><strong>Ownership chain.</strong> Nothing stores an owner column; ownership is derived:
+<code>userId → customer → property → policy → claim / payment</code>. An ADMIN bypasses every check.
+"List everything" endpoints became admin-only, so <code>GET /claims/mine</code> was added to give customers
+their own view.</p>
+
+<h2><span class="n">§3</span>Blocker detail</h2>
+
+<div class="blocker">
+  <header><div class="badge">1</div><h3>A customer could approve their own claim</h3><span class="pill ok">Cleared</span></header>
+  <div class="wasnow">
+    <div><div class="tag was">Was</div><div><code>PUT /claims/{id}/status</code> had no role guard. The gateway forwarded
+      <code>X-User-Role</code>, but a repo-wide grep confirmed <em>nothing ever read it</em>. A plain CUSTOMER token
+      returned <code>200</code> with <code>claimStatus: APPROVED</code>.</div></div>
+    <div><div class="tag fix">Fix</div><div><code>ClaimService.updateStatus</code> now calls <code>requireAdmin</code> before
+      anything else. A claim already APPROVED or REJECTED can no longer be re-decided, which returns <code>409</code>.</div></div>
+    <div><div class="tag ev">Evidence</div><div class="evidence">CUSTOMER approves own claim   403 <span class="p">PASS</span>
+B approves A's claim          403 <span class="p">PASS</span>
+ADMIN sets IN_REVIEW          200 <span class="p">PASS</span>
+ADMIN approves                200 <span class="p">PASS</span>
+ADMIN re-decides settled      409 <span class="p">PASS</span>
+ADMIN, missing claim          404 <span class="p">PASS</span></div></div>
+  </div>
+</div>
+
+<div class="blocker">
+  <header><div class="badge">2</div><h3>Any user could read and overwrite any other user's data</h3><span class="pill ok">Cleared</span></header>
+  <div class="wasnow">
+    <div><div class="tag was">Was</div><div>Authentication happened, authorization did not. As user B, against user A's
+      records: read A's PII, <em>overwrote A's profile</em> (name became "HACKED BY B"), read A's policy, downloaded
+      A's policy PDF, listed every customer's PII and every user's notifications — all <code>200</code>.</div></div>
+    <div><div class="tag fix">Fix</div><div>Ownership enforced in every service via the chain in §2. Single-record reads
+      and writes require owner-or-admin; list-everything endpoints require ADMIN. <code>POST /customers</code> and
+      <code>POST /properties</code> now take the owner from the token and ignore the body's
+      <code>userId</code>/<code>customerId</code> for non-admins, so a profile cannot be created for someone else.</div></div>
+    <div><div class="tag ev">Evidence</div><div class="evidence">B reads A's customer          403 <span class="p">PASS</span>
+B overwrites A's customer     403 <span class="p">PASS</span>
+B reads A's property/policy   403 <span class="p">PASS</span>
+B downloads A's PDF           403 <span class="p">PASS</span>
+B claims on A's policy        403 <span class="p">PASS</span>
+B pays / lists A's payments   403 <span class="p">PASS</span>
+B reads A's claim / inbox     403 <span class="p">PASS</span>
+A lists all customers         403 <span class="p">PASS</span>
+ADMIN lists all customers     200 <span class="p">PASS</span>
+A reads own records           200 <span class="p">PASS</span></div></div>
+  </div>
+</div>
+
+<div class="blocker">
+  <header><div class="badge">3</div><h3>Business services were wide open on their own ports</h3><span class="pill ok">Cleared</span></header>
+  <div class="wasnow">
+    <div><div class="tag was">Was</div><div>Only the gateway checked JWTs, and nothing forced traffic through it.
+      <code>GET :8082/customers</code>, <code>:8083/policies</code>, <code>:8084/claims</code> and
+      <code>:8085/notifications</code> each returned <code>200</code> with no token whatsoever.</div></div>
+    <div><div class="tag fix">Fix</div><div>Each service has a <code>GatewayAuthFilter</code> (a plain
+      <code>OncePerRequestFilter</code> — no new dependency) requiring <code>X-Gateway-Auth</code> to match its
+      configured secret, compared in constant time via <code>MessageDigest.isEqual</code>. Feign interceptors forward
+      the header so inter-service calls still work.</div></div>
+    <div><div class="tag ev">Evidence</div><div class="evidence">:8082 / :8083 / :8084 / :8085 direct   401 <span class="p">PASS</span>
+direct + forged X-User-Role: ADMIN     401 <span class="p">PASS</span>
+direct + guessed gateway secret        401 <span class="p">PASS</span>
+direct + correct secret, CUSTOMER      403 <span class="p">PASS</span>
+gateway, no token / bad token          401 <span class="p">PASS</span>
+gateway, /auth/health (public)         200 <span class="p">PASS</span></div></div>
+  </div>
+</div>
+
+<div class="blocker">
+  <header><div class="badge">4</div><h3>Every auth-service exception came back as 401</h3><span class="pill ok">Cleared</span></header>
+  <div class="wasnow">
+    <div><div class="tag was">Was</div><div>auth-service was the only service with no <code>@RestControllerAdvice</code>.
+      An exception in the controller escaped to the servlet container's <code>/error</code> forward, which
+      <code>SecurityConfig</code> then blocked because it permitted only <code>/auth/**</code> with
+      <code>anyRequest().authenticated()</code> — so the entry point converted it to a bare <code>401</code>. A
+      duplicate email, an invalid role and a missing field were all reported as "Unauthorized".</div></div>
+    <div><div class="tag fix">Fix</div><div>Added a handler with <code>DuplicateResourceException → 409</code>,
+      <code>BadRequestException → 400</code>, validation and malformed-JSON mapping, and
+      <code>.requestMatchers("/error").permitAll()</code> so the real response can actually reach the client. Added
+      the missing <code>spring-boot-starter-validation</code> and constraints on both DTOs. Also removed a leftover
+      <code>System.out.println("REGISTER API CALLED")</code> and a redundant second password check that ran after
+      <code>AuthenticationManager</code> had already verified it.</div></div>
+    <div><div class="tag ev">Evidence</div><div class="evidence">duplicate email     409 <span class="p">PASS</span>   role=SUPERUSER   400 <span class="p">PASS</span>
+missing fullName    400 <span class="p">PASS</span>   empty body {}    400 <span class="p">PASS</span>
+malformed JSON      400 <span class="p">PASS</span>   short password   400 <span class="p">PASS</span>
+wrong password      401 <span class="p">PASS</span>   valid login      200 <span class="p">PASS</span></div></div>
+  </div>
+</div>
+
+<div class="blocker">
+  <header><div class="badge">5</div><h3>A duplicate profile broke customer lookup permanently</h3><span class="pill ok">Cleared</span></header>
+  <div class="wasnow">
+    <div><div class="tag was">Was</div><div><code>customers.user_id</code> had no unique constraint, but
+      <code>findByUserId</code> returned <code>Optional</code>. Creating two profiles for one user made
+      <code>GET /customers/user/{id}</code> return <code>500</code> from then on, with no way to recover through
+      the API.</div></div>
+    <div><div class="tag fix">Fix</div><div>Two layers: <code>existsByUserId</code> in the service rejects a second
+      profile with <code>409</code>, and a database unique constraint closes the race between two concurrent
+      requests that both pass the check.</div></div>
+    <div><div class="tag ev">Evidence</div><div class="evidence">A creates 2nd profile          409 <span class="p">PASS</span>
+A spoofs userId in body        409 <span class="p">PASS</span>  (body ignored)
+SHOW INDEX ... user_id         Non_unique = 0 <span class="p">PASS</span></div></div>
+  </div>
+  <div class="callout warn" style="margin-bottom:0">
+    <div class="h">Worth knowing — the annotation alone was not enough</div>
+    <p>Adding <code>unique = true</code> to the entity did <strong>not</strong> create the constraint.
+    <code>ddl-auto=update</code> will not retrofit a unique index onto a column that already exists, so it was
+    applied directly:</p>
+    <pre><code>ALTER TABLE customers ADD CONSTRAINT uk_customers_user_id UNIQUE (user_id);</code></pre>
+    <p>A fresh database picks it up from the annotation. This is precisely the gap a migration tool exists to close —
+    adding Flyway or Liquibase is the durable fix.</p>
+  </div>
+</div>
+
+<div class="blocker">
+  <header><div class="badge">6</div><h3>Bad enum and type values returned 500 instead of 400</h3><span class="pill ok">Cleared</span></header>
+  <div class="wasnow">
+    <div><div class="tag was">Was</div><div><code>valueOf()</code> was called on unvalidated input, and the catch-all
+      <code>@ExceptionHandler(Exception.class)</code> mapped the resulting <code>IllegalArgumentException</code> to
+      <code>500</code>. Affected <code>riskFactor</code>, <code>propertyType</code>, <code>?status=</code> (including
+      correct-but-lowercase values) and any mistyped path variable.</div></div>
+    <div><div class="tag fix">Fix</div><div>Enums parsed through small helpers that throw
+      <code>BadRequestException</code> naming the allowed values; <code>?status=</code> taken as a String and parsed
+      in the service; <code>MethodArgumentTypeMismatchException</code> and <code>HttpMessageNotReadableException</code>
+      mapped to <code>400</code> in all four services. Construction year is now range-checked too.</div></div>
+    <div><div class="tag ev">Evidence</div><div class="evidence">riskFactor=EXTREME    400 <span class="p">PASS</span>   propertyType=CASTLE     400 <span class="p">PASS</span>
+GET /policies/abc     400 <span class="p">PASS</span>   GET /customers/abc      400 <span class="p">PASS</span>
+constructionYear=2030 400 <span class="p">PASS</span>   ?status=BOGUS           400 <span class="p">PASS</span>
+?status=submitted     200 <span class="p">PASS</span>  (lowercase now accepted)</div></div>
+  </div>
+</div>
+
+<div class="blocker">
+  <header><div class="badge">7</div><h3>Claims had no business rules at all</h3><span class="pill ok">Cleared</span></header>
+  <div class="wasnow">
+    <div><div class="tag was">Was</div><div><code>submitClaim</code> checked only that the policy <em>existed</em>.
+      All of these returned <code>201</code>: an incident dated 2099, an incident 36 years before the policy started,
+      a loss of ₹99,999,999 against ₹1,000,000 of cover, and the same claim submitted three times.</div></div>
+    <div><div class="tag fix">Fix</div><div>The Feign DTO was widened to carry the policy's status, start date, end date
+      and coverage amount, and <code>validateAgainstPolicy</code> now rejects: a non-ACTIVE policy, a future incident
+      date, a date outside the policy period, a loss above cover, and — via a repository check — a duplicate of the
+      same policy + incident type + incident date.</div></div>
+    <div><div class="tag ev">Evidence</div><div class="evidence">incidentDate in future     400 <span class="p">PASS</span>
+incidentDate pre-policy    400 <span class="p">PASS</span>
+loss above coverage        400 <span class="p">PASS</span>
+unknown policy number      400 <span class="p">PASS</span>
+duplicate same incident    409 <span class="p">PASS</span>
+valid claim                201 <span class="p">PASS</span></div></div>
+  </div>
+</div>
+
+<div class="blocker">
+  <header><div class="badge">8</div><h3>Payments had no business rules at all</h3><span class="pill ok">Cleared</span></header>
+  <div class="wasnow">
+    <div><div class="tag was">Was</div><div>Underpayment (₹1 against a ₹6,000 premium), overpayment (₹99,999,999) and
+      unlimited duplicate payments all returned <code>201</code>. Nothing related the amount to what was owed.</div></div>
+    <div><div class="tag fix">Fix</div><div><code>recordPayment</code> computes outstanding premium as
+      <em>annual premium − sum of payments to date</em>, rejects anything above it with <code>400</code>, and rejects
+      any payment against a fully-settled policy with <code>409</code>. Reading a policy's payments now runs the same
+      ownership check as reading the policy.</div></div>
+    <div><div class="tag ev">Evidence</div><div class="evidence">Premium on the test policy = 35,000.00
+overpay 99,999,999         400 <span class="p">PASS</span>
+part-pay 15,000            201 <span class="p">PASS</span>
+then overpay 25,000        400 <span class="p">PASS</span>
+then exact 20,000          201 <span class="p">PASS</span>
+then pay again             409 <span class="p">PASS</span></div></div>
+  </div>
+</div>
+
+<div class="blocker">
+  <header><div class="badge">9</div><h3>Policy and claim numbers could collide</h3><span class="pill ok">Cleared</span></header>
+  <div class="wasnow">
+    <div><div class="tag was">Was</div><div>Both were a random 6-digit suffix written to a <code>unique</code> column with
+      no collision handling, so a clash surfaced as a random <code>500</code>. Claim numbers also lacked the year
+      prefix policies had, leaving the whole space at one million — roughly even odds of a collision by ~1,200 claims.</div></div>
+    <div><div class="tag fix">Fix</div><div>Both generators check <code>existsBy…</code> and redraw, up to ten attempts.
+      Claim numbers gained the year prefix, matching the policy format.</div></div>
+    <div><div class="tag ev">Evidence</div><div class="evidence">6 policies issued back to back   6/6 unique <span class="p">PASS</span>
+claim number format             CLM-2026-119346 <span class="p">PASS</span></div></div>
+  </div>
+</div>
+
+<h2><span class="n">§4</span>Behaviour changes — check the frontend</h2>
+
+<p class="lede">Closing these blockers necessarily changed some responses. Any client built against the old behaviour
+needs these six adjustments.</p>
+
+<table>
+  <thead><tr><th class="num">#</th><th style="width:30%">Change</th><th>What to do</th></tr></thead>
+  <tbody>
+    <tr><td class="num">1</td><td><strong>New required environment variable</strong></td>
+      <td><code>GATEWAY_SHARED_SECRET</code>, identical across the gateway and all four business services.
+      Nothing starts without it.</td></tr>
+    <tr><td class="num">2</td><td><code>userId</code> / <code>customerId</code> in request bodies are ignored</td>
+      <td>On <code>POST /customers</code> and <code>POST /properties</code> the owner comes from the token.
+      Both fields are now optional and only meaningful for an ADMIN acting on someone's behalf.</td></tr>
+    <tr><td class="num">3</td><td>List endpoints are ADMIN-only</td>
+      <td><code>GET /customers</code>, <code>/properties</code>, <code>/policies</code>, <code>/claims</code>,
+      <code>/notifications</code> now return <code>403</code> for customers. Use the new
+      <code>GET /claims/mine</code> and <code>GET /notifications/recipient/{own-email}</code>.</td></tr>
+    <tr><td class="num">4</td><td><code>POST /auth/register</code> returns <code>201</code></td>
+      <td>Was <code>200</code>. Update any strict status check.</td></tr>
+    <tr><td class="num">5</td><td>Claim number format changed</td>
+      <td>Now <code>CLM-2026-119346</code>; was <code>CLM-594280</code>. Widen any fixed-length parsing.</td></tr>
+    <tr><td class="num">6</td><td>A 30-day claim reporting window is enforced</td>
+      <td>Taken from the policy PDF's own terms. This is the one rule inferred rather than specified — easy to relax
+      via <code>REPORTING_WINDOW_DAYS</code> in <code>ClaimService</code>.</td></tr>
+  </tbody>
+</table>
+
+<div class="callout note">
+  <div class="h">Unchanged and re-verified</div>
+  <p>The premium formula still produces <strong>risk factor 1.4 / ₹35,000.00</strong> on the README's worked example
+  (house, built 2000, ₹50,00,000), and the boundary cases still hold — 20 years old is not "old", 21 is. Policy PDF
+  generation still works end to end through Feign, returning a valid <code>%PDF</code> document. Error responses were
+  also checked to confirm they no longer echo internal exception messages:</p>
+  <pre><code>{"error":"Conflict","message":"An account with email … already exists","status":409}
+{"error":"Bad Request","message":"Invalid role 'NOPE'. Allowed: CUSTOMER, ADMIN","status":400}
+{"error":"Bad Request","message":"Malformed or unreadable request","status":400}</code></pre>
+</div>
+
+<h2><span class="n">§5</span>Running it</h2>
+
+<pre><code># Windows PowerShell — all four are required
+$env:MYSQL_ROOT_PASSWORD   = "your-mysql-password"
+$env:JWT_SECRET            = "a-long-random-secret-at-least-32-bytes-please"
+$env:JWT_EXPIRATION        = "3600000"
+$env:GATEWAY_SHARED_SECRET = "another-long-random-secret"</code></pre>
+
+<p><code>JWT_SECRET</code> must be identical for auth-service (signs) and api-gateway (verifies). It is base64-decoded
+before use, so it must decode to at least 32 bytes or HS256 signing fails at startup.
+<code>GATEWAY_SHARED_SECRET</code> must be identical for the gateway and all four business services.
+Start order is unchanged: Eureka (8761), then the gateway (8080), then the services (8081–8085).</p>
+
+<div class="callout note">
+  <div class="h">Test data cleanup</div>
+  <p>The audit's own test rows were deleted from the four business databases — every row in them was created by the
+  smoke tests (oldest row 19:27:43 on 8 Sep, exactly when they began), and the duplicate <code>user_id</code> rows
+  were blocking the constraint in blocker 5. The four original users
+  (<code>revanth@</code>, <code>vadivel@</code>, <code>dheeru@</code>, <code>test@</code>) were left untouched.</p>
+</div>
+
+<h2><span class="n">§6</span>Still open — none of these are blockers</h2>
+
+<ul class="cols">
+  <li>jjwt 0.11.5 deprecated API (<code>signWith(alg, String)</code>, <code>setSigningKey(String)</code>) — works, warns on build.</li>
+  <li><code>PasswordHash.java</code> still ships a <code>main()</code> with a hardcoded password in production source.</li>
+  <li>79 build artifacts remain committed, including <code>.class</code> files and a packaged jar; only auth-service has a <code>.gitignore</code>.</li>
+  <li>Test coverage is still a single empty <code>contextLoads()</code>. <code>PremiumCalculator</code> and the new <code>validateAgainstPolicy</code> are pure functions and the natural place to start.</li>
+  <li><code>POST /notifications</code> accepts any authenticated caller, since claim-service invokes it with the customer's own identity. Documented in the README.</li>
+  <li>No schema migration tool, which is what made blocker 5 need a manual <code>ALTER TABLE</code>.</li>
+  <li>A stray <code>package-lock.json</code> sits in auth-service — a Node lockfile in a Java module.</li>
+  <li>Policy status never changes when a premium is fully paid; there is no <code>PENDING_PAYMENT</code> state to move to.</li>
+</ul>
+
+<h2><span class="n">§7</span>What changed, by module</h2>
+
+<table>
+  <thead><tr><th style="width:20%">Module</th><th style="width:9%">Files</th><th>Principal changes</th></tr></thead>
+  <tbody>
+    <tr><td><code>api-gateway</code></td><td>3 mod</td><td>Forwards <code>X-User-Id</code> and <code>X-Gateway-Auth</code>; strips client-supplied identity headers; open-path matching changed from prefix to exact.</td></tr>
+    <tr><td><code>auth-service</code></td><td>7 mod · 3 new</td><td><code>userId</code> claim in the JWT; exception handler; <code>/error</code> permitted; validation starter and DTO constraints; debug print and redundant password check removed.</td></tr>
+    <tr><td><code>customer-service</code></td><td>6 mod · 6 new</td><td>Gateway filter; caller context; ownership on all reads/writes; duplicate-profile guard; unique <code>user_id</code>; safe enum parsing.</td></tr>
+    <tr><td><code>policy-service</code></td><td>8 mod · 7 new</td><td>Gateway filter; Feign identity propagation; <code>OwnershipService</code> resolving user → customer; payment rules; collision-safe policy numbers; construction-year validation.</td></tr>
+    <tr><td><code>claim-service</code></td><td>7 mod · 5 new</td><td>ADMIN guard on status changes; claim business rules; ownership by customer email; <code>/claims/mine</code>; widened policy DTO; collision-safe claim numbers.</td></tr>
+    <tr><td><code>notification-service</code></td><td>2 mod · 4 new</td><td>Gateway filter; ADMIN-only list; recipient-scoped inbox; its first exception handler.</td></tr>
+    <tr><td><code>eureka-server</code></td><td>—</td><td>No changes required.</td></tr>
+  </tbody>
+</table>
+
+<footer>
+  <span>Home Insurance Management System — Blocker Remediation Report</span>
+  <span>9 September 2026 · 104/104 checks passed</span>
+</footer>
+
+</body>
+</html>

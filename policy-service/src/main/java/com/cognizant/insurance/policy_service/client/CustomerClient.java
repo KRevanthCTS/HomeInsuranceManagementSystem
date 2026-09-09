@@ -11,4 +11,9 @@ public interface CustomerClient {
 
     @GetMapping("/customers/{id}")
     CustomerDto getCustomerById(@PathVariable("id") Long id);
+
+    // Lets us turn the caller's auth user id (from the gateway) into the
+    // customerId that properties and policies are keyed on.
+    @GetMapping("/customers/user/{userId}")
+    CustomerDto getByUserId(@PathVariable("userId") Long userId);
 }

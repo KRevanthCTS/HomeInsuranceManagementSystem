@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cognizant.insurance.claim_service.dto.ClaimRequest;
 import com.cognizant.insurance.claim_service.dto.ClaimStatusUpdateRequest;
 import com.cognizant.insurance.claim_service.entity.Claim;
-import com.cognizant.insurance.claim_service.entity.Claim.ClaimStatus;
 import com.cognizant.insurance.claim_service.service.ClaimService;
 
 import jakarta.validation.Valid;
@@ -45,13 +44,21 @@ public class ClaimController {
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    // Admin view - all claims, or filter by status (e.g. ?status=SUBMITTED for the pending list).
+    // Admin view - all claims, or filter by status (e.g. ?status=SUBMITTED for the
+    // pending list). Taken as a String and parsed in the service so a bad value
+    // comes back as a 400 with the allowed options, not a 500.
     @GetMapping
-    public ResponseEntity<List<Claim>> getAll(@RequestParam(required = false) ClaimStatus status) {
-        if (status != null) {
+    public ResponseEntity<List<Claim>> getAll(@RequestParam(required = false) String status) {
+        if (status != null && !status.isBlank()) {
             return ResponseEntity.ok(claimService.getByStatus(status));
         }
         return ResponseEntity.ok(claimService.getAll());
+    }
+
+    // A customer's own claims, since the list above is admin-only.
+    @GetMapping("/mine")
+    public ResponseEntity<List<Claim>> getMine() {
+        return ResponseEntity.ok(claimService.getMyClaims());
     }
 
     @GetMapping("/{id}")

@@ -31,6 +31,14 @@ public class JwtUtil {
         return parse(token).get("role", String.class);
     }
 
+    // The numeric user id auth-service puts in the token. Jackson may hand this
+    // back as an Integer or a Long depending on size, so widen it ourselves
+    // instead of asking Claims for a specific type (which would throw).
+    public Long extractUserId(String token) {
+        Object raw = parse(token).get("userId");
+        return (raw instanceof Number number) ? number.longValue() : null;
+    }
+
     private Claims parse(String token) {
         return Jwts.parser()
                 .setSigningKey(secret)

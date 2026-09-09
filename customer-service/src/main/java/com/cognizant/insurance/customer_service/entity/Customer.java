@@ -25,7 +25,9 @@ public class Customer {
 
     // Points back to the user row in auth-service. It is just an id here -
     // there is no cross-database foreign key because each service owns its own DB.
-    @Column(name = "user_id", nullable = false)
+    // Unique: one profile per user. Without this, findByUserId could match two
+    // rows and every lookup for that user would fail.
+    @Column(name = "user_id", nullable = false, unique = true)
     private Long userId;
 
     // Denormalised copy of the user's name so we don't have to call auth-service

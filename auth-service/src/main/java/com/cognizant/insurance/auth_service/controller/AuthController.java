@@ -3,7 +3,6 @@ package com.cognizant.insurance.auth_service.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +18,8 @@ import com.cognizant.insurance.auth_service.dto.RegisterRequest;
 import com.cognizant.insurance.auth_service.entity.User;
 import com.cognizant.insurance.auth_service.service.AuthService;
 import com.cognizant.insurance.auth_service.util.JwtUtil;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
@@ -45,22 +46,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         try {
-            // Authenticate credentials using AuthenticationManager which will use CustomUserDetailsService
+            // AuthenticationManager delegates to CustomUserDetailsService and checks
+            // the password against the stored BCrypt hash, so there is no need to
+            // re-verify it here.
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
 
             User user = authService.validateUser(request.getEmail());
 
-            // As a safety check, ensure password matches stored hash (AuthenticationManager should already do this)
-            if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-                throw new BadCredentialsException("Invalid credentials");
-            }
-
-            // Convert role to String (e.g., enum.name()) before generating the token
-            String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
+            String token = jwtUtil.generateToken(
+                    user.getEmail(), user.getRole().name(), user.getUserId());
             return ResponseEntity.ok(new LoginResponse(token));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -68,9 +66,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
         authService.registerUser(request, passwordEncoder);
-        System.out.println("REGISTER API CALLED ✅");
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }
 }

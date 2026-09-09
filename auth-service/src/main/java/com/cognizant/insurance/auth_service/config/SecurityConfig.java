@@ -31,6 +31,10 @@ public class SecurityConfig {
             .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint))
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/**").permitAll()
+                    // The container forwards to /error when a controller throws.
+                    // Without this, that forward is blocked and the caller sees a
+                    // bare 401 instead of the real 400/409 from the handler.
+                    .requestMatchers("/error").permitAll()
                     .anyRequest().authenticated()
             );
 

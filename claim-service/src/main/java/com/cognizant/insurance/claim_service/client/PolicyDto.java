@@ -1,12 +1,19 @@
 package com.cognizant.insurance.claim_service.client;
 
-// Subset of the policy JSON returned by policy-service - just enough to confirm
-// the policy exists and to grab its internal id.
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+// The parts of the policy JSON we need from policy-service: enough to confirm the
+// policy exists, that it was in force when the incident happened, and that the
+// claimed loss is within cover.
 public class PolicyDto {
 
     private Long policyId;
     private String policyNumber;
     private String status;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private BigDecimal coverageAmount;
 
     public Long getPolicyId() {
         return policyId;
@@ -30,5 +37,29 @@ public class PolicyDto {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public BigDecimal getCoverageAmount() {
+        return coverageAmount;
+    }
+
+    public void setCoverageAmount(BigDecimal coverageAmount) {
+        this.coverageAmount = coverageAmount;
     }
 }
